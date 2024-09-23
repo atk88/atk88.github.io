@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>動態YouTube影片播放</title>
+    <style>
+        body, html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            width: 100%;
+            background: #1a1a1a; /* 純黑色背景 */
+            background: linear-gradient(145deg, #1a1a1a, #333333); /* 漸變背景 */
+            color: white; /* 文字顏色設為白色 */
+            font-family: Arial, sans-serif;
+        }
+        .video-container {
+            display: grid;
+            gap: 10px;
+            height: calc(100vh - 200px); /* 減去控制按鈕和輸入框的高度 */
+        }
+        .video-container iframe {
+            width: 100%;
+            height: 100%;
+        }
+        .controls {
+            margin: 10px;
+            text-align: center;
+        }
+        .controls input, .controls button {
+            padding: 10px 15px; /* 增加按鈕的內邊距 */
+            margin: 5px;
+            border: none;
+            border-radius: 5px;
+            background: #444444; /* 深灰色背景 */
+            color: white;
+            font-size: 14px; /* 增加字體大小 */
+            cursor: pointer;
+            transition: background 0.3s, transform 0.3s; /* 添加過渡效果 */
+        }
+        .controls button:hover {
+            background: #555555; /* 懸停時的背景顏色 */
+            transform: scale(1.05); /* 懸停時的放大效果 */
+        }
+        .controls input[type="number"] {
+            width: 100px; /* 固定數量輸入框寬度 */
+        }
+        .controls input[type="text"] {
+            width: 300px; /* 固定網址輸入框寬度 */
+        }
+        .controls input:focus, .controls button:focus {
+            outline: 2px solid #ffffff; /* 焦點樣式 */
+        }
+        .controls input[type="text"]:focus {
+            width: 500px; /* 點擊時擴展網址輸入框寬度 */
+            transition: width 0.3s; /* 添加過渡效果 */
+        }
+        @media (max-width: 600px) {
+            .controls input, .controls button {
+                width: 100%;
+                margin: 5px 0;
+            }
+            .video-container {
+                grid-template-columns: 1fr; /* 小屏幕下單列顯示 */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <input type="number" id="videoCount" placeholder="輸入影片數量" min="1" max="16">
+        <input type="text" id="videoUrl" placeholder="輸入YouTube影片網址">
+        <button onclick="generateVideos()">生成影片</button>
+        <button onclick="playAll()">播放全部</button>
+        <button onclick="pauseAll()">暫停全部</button>
+    </div>
+    <div class="video-container" id="videoContainer"></div>
+
+    <script>
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+
+        var players = [];
+
+        function onYouTubeIframeAPIReady() {
+            // 這個函數會在YouTube IFrame API加載完成後被調用
+        }
+
+        function extractVideoId(url) {
+            const urlObj = new URL(url);
+            return urlObj.searchParams.get("v") || urlObj.pathname.split('/').pop();
+        }
+
+        function generateVideos() {
+            const videoContainer = document.getElementById('videoContainer');
+            const videoCount = document.getElementById('videoCount').value;
+            const videoUrl = document.getElementById('videoUrl').value;
+            const videoId = extractVideoId(videoUrl);
+
+            if (videoCount < 1 || videoCount > 16) {
+                alert("請輸入1到16之間的數量");
+                return;
+            }
+            if (!videoId) {
+                alert("請輸入有效的YouTube影片網址");
+                return;
+            }
+
+            videoContainer.innerHTML = ''; // 清空現有的影片
+            players = []; // 清空現有的播放器
+
+            // 設置網格佈局
+            const columns = Math.ceil(Math.sqrt(videoCount));
+            videoContainer.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+
+            for (let i = 1; i <= videoCount; i++) {
+                const iframe = document.createElement('iframe');
+                iframe.id = `video${i}`;
+                iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1`;
+                iframe.frameBorder = "0";
+                iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+                iframe.allowFullscreen = true;
+                videoContainer.appendChild(iframe);
+
+                // 初始化YouTube播放器
+                players.push(new YT.Player(`video${i}`));
+            }
+        }
+
+        function playAll() {
+            players.forEach(player => player.playVideo());
+        }
+
+        function pauseAll() {
+            players.forEach(player => player.pauseVideo());
+        }
+    </script>
+</body>
+</html>
