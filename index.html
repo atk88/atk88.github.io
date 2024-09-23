@@ -131,7 +131,11 @@
         }
 
         function playAll() {
-            players.forEach(player => player.playVideo());
+            players.forEach((player, index) => {
+                setTimeout(() => {
+                    player.playVideo();
+                }, index * 500); // 逐個播放，每個影片間隔500毫秒
+            });
         }
 
         function pauseAll() {
