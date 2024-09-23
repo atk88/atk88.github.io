@@ -47,10 +47,10 @@
             transform: scale(1.05); /* 懸停時的放大效果 */
         }
         .controls input[type="number"] {
-            width: 100px; /* 固定數量輸入框寬度 */
+            width: 70px; /* 固定數量輸入框寬度 */
         }
         .controls input[type="text"] {
-            width: 300px; /* 固定網址輸入框寬度 */
+            width: 400px; /* 固定網址輸入框寬度 */
         }
         .controls input:focus, .controls button:focus {
             outline: 2px solid #ffffff; /* 焦點樣式 */
@@ -75,7 +75,7 @@
 </head>
 <body>
     <div class="controls">
-        <input type="number" id="videoCount" placeholder="輸入影片數量" min="1" max="16">
+        <input type="number" id="videoCount" placeholder="輸入數量" min="1" max="16">
         <input type="text" id="videoUrl" placeholder="輸入YouTube影片網址">
         <button onclick="generateVideos()"><i class="fas fa-video"></i>生成影片</button>
         <button onclick="playAll()"><i class="fas fa-play"></i>播放全部</button>
