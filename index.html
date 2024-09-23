@@ -3,8 +3,11 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SMTV多螢幕播放</title>
+    <title>動態YouTube影片播放</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
+        @import url('https://fonts.googleapis.com/css2?family=Avenir:wght@400;700&display=swap');
+
         body, html {
             margin: 0;
             padding: 0;
@@ -13,7 +16,7 @@
             background: #1a1a1a; /* 純黑色背景 */
             background: linear-gradient(145deg, #1a1a1a, #333333); /* 漸變背景 */
             color: white; /* 文字顏色設為白色 */
-            font-family: Arial, sans-serif;
+            font-family: 'Avenir', sans-serif; /* 使用Avenir字體 */
         }
         .video-container {
             display: grid;
@@ -56,6 +59,9 @@
             width: 500px; /* 點擊時擴展網址輸入框寬度 */
             transition: width 0.3s; /* 添加過渡效果 */
         }
+        .controls button i {
+            margin-right: 5px; /* 圖標與文字之間的間距 */
+        }
         @media (max-width: 600px) {
             .controls input, .controls button {
                 width: 100%;
@@ -71,9 +77,9 @@
     <div class="controls">
         <input type="number" id="videoCount" placeholder="輸入影片數量" min="1" max="16">
         <input type="text" id="videoUrl" placeholder="輸入YouTube影片網址">
-        <button onclick="generateVideos()">生成影片</button>
-        <button onclick="playAll()">播放全部</button>
-        <button onclick="pauseAll()">暫停全部</button>
+        <button onclick="generateVideos()"><i class="fas fa-video"></i>生成影片</button>
+        <button onclick="playAll()"><i class="fas fa-play"></i>播放全部</button>
+        <button onclick="pauseAll()"><i class="fas fa-pause"></i>暫停全部</button>
     </div>
     <div class="video-container" id="videoContainer"></div>
 
