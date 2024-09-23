@@ -4,7 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SMTV多螢幕播放</title>
-    <link rel="icon" href="https://i.imgur.com/etmOelA.png" type="image/png">
     <style>
         body, html {
             margin: 0;
@@ -59,7 +58,28 @@
         }
         @media (max-width: 600px) {
             .controls input, .controls button {
-...(about 20 lines omitted)...
+                width: 100%;
+                margin: 5px 0;
+            }
+            .video-container {
+                grid-template-columns: 1fr; /* 小屏幕下單列顯示 */
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="controls">
+        <input type="number" id="videoCount" placeholder="輸入影片數量" min="1" max="16">
+        <input type="text" id="videoUrl" placeholder="輸入YouTube影片網址">
+        <button onclick="generateVideos()">生成影片</button>
+        <button onclick="playAll()">播放全部</button>
+        <button onclick="pauseAll()">暫停全部</button>
+    </div>
+    <div class="video-container" id="videoContainer"></div>
+
+    <script>
+        var tag = document.createElement('script');
+        tag.src = "https://www.youtube.com/iframe_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
@@ -81,7 +101,7 @@
             const videoId = extractVideoId(videoUrl);
 
             if (videoCount < 1 || videoCount > 160) {
-                alert("⚠️請輸入1到160之間的數量");
+                alert("請輸入1到160之間的數量");
                 return;
             }
             if (!videoId) {
