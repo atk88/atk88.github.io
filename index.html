@@ -160,7 +160,15 @@
                 videoContainer.appendChild(iframe);
 
                 // 初始化YouTube播放器
-                players.push(new YT.Player(`video${i}`));
+                const player = new YT.Player(`video${i}`, {
+                    events: {
+                        'onReady': (event) => {
+                            event.target.setVolume(1); // 設定音量為最低音量1
+                            event.target.setPlaybackQuality('small'); // 設定解析度為最低
+                        }
+                    }
+                });
+                players.push(player);
             }
         }
 
