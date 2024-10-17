@@ -22,80 +22,89 @@
             display: flex;
             flex-direction: column;
             min-height: 100vh;
-        }
-
-        .logo {
-            position: absolute;
-            top: 10px;
-            right: 20px; /* 向左移動10px */
-            height: 50px; /* 與控制列高度一致 */
-        }
-
-        .logo img {
-            height: 100%;
+            margin: 0;
+            overflow: hidden;
+            background: linear-gradient(145deg, #0d0d0d, #1a1a1a, #0d0d0d);
+            opacity: 0;
+            transition: opacity 0.5s ease-in;
+            background-size: 200% 200%;
+            animation: backgroundAnimation 10s ease infinite;
         }
 
         .controls-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background: rgba(13, 13, 13, 0.8);
+            padding: 10px;
+            z-index: 1000;
             position: sticky;
             top: 0;
-            background: linear-gradient(145deg, #0d0d0d, #1a1a1a, #0d0d0d);
-            z-index: 1000;
-            padding: 10px 0;
         }
 
         .controls {
-            margin: 10px;
-            text-align: center;
-            height: 50px; /* 控制列高度 */
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            max-width: 1000px; /* 增加最大寬度 */
+            width: 100%;
         }
 
         .controls input, .controls button {
-            padding: 10px 15px; /* 增加按鈕的內邊距 */
-            margin: 5px;
-            border: 1px solid #559FD8; /* 邊框顏色設為#559FD8 */
-            border-radius: 5px;
-            background: #000000; /* 背景顏色設為黑色 */
-            color: #559FD8; /* 文字顏色設為#559FD8 */
-            font-size: 14px; /* 增加字體大小 */
-            cursor: pointer;
-            transition: background 0.3s, transform 0.3s; /* 添加過渡效果 */
-        }
-
-        .controls button:hover {
-            background: #559FD8; /* 懸停時的背景顏色 */
-            color: #000000; /* 懸停時的文字顏色 */
-            transform: scale(1.05); /* 懸停時的放大效果 */
+            padding: 5px 10px;
+            font-size: 14px;
+            background-color: #1a1a1a;
+            color: #559FD8;
+            border: 1px solid #559FD8;
+            border-radius: 4px;
+            transition: background-color 1.5s ease, transform 0.1s ease;
         }
 
         .controls input[type="number"] {
-            width: 70px; /* 固定數量輸入框寬度 */
+            width: 60px;
         }
 
         .controls input[type="text"] {
-            width: 400px; /* 固定網址輸入框寬度 */
+            flex-grow: 1;
+            min-width: 150px;
         }
 
-        .controls input:focus, .controls button:focus {
-            outline: 2px solid #559FD8; /* 焦點樣式 */
+        .controls input:hover, .controls button:hover {
+            background-color: #559FD8;
+            color: #1a1a1a;
         }
 
-        .controls input[type="text"]:focus {
-            width: 500px; /* 點擊時擴展網址輸入框寬度 */
-            transition: width 0.3s; /* 添加過渡效果 */
+        .controls input:active, .controls button:active {
+            transform: scale(0.95);
         }
 
-        .controls button i {
-            margin-right: 5px; /* 圖標與文字之間的間距 */
+        .logo {
+            position: fixed; /* 固定在右上角 */
+            top: 10px;
+            right: 10px;
+            z-index: 1100; /* 確保在其他元素之上 */
+        }
+
+        .logo img {
+            height: 30px;
+            filter: brightness(1.2); /* 增加亮度 */
+            transition: transform 0.3s;
+        }
+
+        .logo img:hover {
+            transform: rotate(10deg);
         }
 
         .video-container {
-            display: grid;
-            gap: 10px;
-            padding: 10px;
-            box-sizing: border-box;
             flex-grow: 1;
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 5px;
+            padding: 5px;
+            box-sizing: border-box;
             overflow-y: auto;
-            height: calc(100vh - 70px); /* 減去控制列的高度 */
         }
 
         .video-wrapper {
@@ -103,6 +112,11 @@
             padding-bottom: 56.25%; /* 16:9 寬高比 */
             height: 0;
             overflow: hidden;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .video-wrapper:hover {
+            box-shadow: 0 0 15px rgba(85, 159, 216, 0.7);
         }
 
         .video-wrapper iframe {
@@ -112,25 +126,78 @@
             width: 100%;
             height: 100%;
             border-radius: 10px;
-            box-shadow: 0 0 20px rgba(85, 159, 216, 0.5);
         }
 
-        @media (max-width: 600px) {
+        @media (max-width: 768px) {
+            .controls-container {
+                padding: 5px;
+                flex-direction: column;
+                align-items: stretch;
+            }
+
+            .controls {
+                flex-direction: column;
+                width: 100%;
+            }
+
             .controls input, .controls button {
                 width: 100%;
-                margin: 5px 0;
+                margin-bottom: 5px;
             }
+
+            .logo {
+                position: static;
+                align-self: flex-end;
+                margin-bottom: 5px;
+            }
+
             .video-container {
-                grid-template-columns: 1fr; /* 小屏幕下單列顯示 */
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             }
+        }
+
+        @media (max-width: 480px) {
+            .controls-container {
+                flex-direction: row;
+                justify-content: space-between;
+            }
+
+            .controls input, .controls button {
+                font-size: 10px;
+                padding: 2px 4px;
+            }
+
+            .controls button {
+                width: 30px;
+                height: 30px;
+                display: flex;
+                justify-content: center;
+                align-items: center;
+            }
+
+            .controls button i {
+                font-size: 16px;
+            }
+
+            .controls input[type="text"] {
+                width: 100px;
+            }
+
+            .logo img {
+                height: 20px;
+            }
+        }
+
+        /* 新增背景動畫 */
+        @keyframes backgroundAnimation {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
     </style>
 </head>
 <body>
     <div class="controls-container">
-        <div class="logo">
-            <img src="https://i.imgur.com/S7fBbTw.png" alt="Logo">
-        </div>
         <div class="controls">
             <input type="number" id="videoCount" placeholder="輸入數量" min="1" max="160">
             <input type="text" id="videoUrl" placeholder="輸入YouTube影片網址">
@@ -139,9 +206,16 @@
             <button onclick="pauseAll()"><i class="fas fa-pause"></i>暫停全部</button>
         </div>
     </div>
+    <div class="logo">
+        <img src="https://i.imgur.com/S7fBbTw.png" alt="Logo">
+    </div>
     <div class="video-container" id="videoContainer"></div>
 
     <script>
+        window.addEventListener('load', () => {
+            document.body.style.opacity = '1';
+        });
+
         var tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
         var firstScriptTag = document.getElementsByTagName('script')[0];
@@ -176,25 +250,6 @@
             videoContainer.innerHTML = ''; // 清空現有的影片
             players = []; // 清空現有的播放器
 
-            // 計算最佳的網格佈局
-            const aspectRatio = 16 / 9;
-            const containerWidth = videoContainer.clientWidth;
-            const containerHeight = videoContainer.clientHeight;
-            const containerAspectRatio = containerWidth / containerHeight;
-
-            let cols = Math.ceil(Math.sqrt(videoCount * containerAspectRatio / aspectRatio));
-            let rows = Math.ceil(videoCount / cols);
-
-            // 確保有足夠的格子來容納所有影片
-            while (cols * rows < videoCount) {
-                cols++;
-                rows = Math.ceil(videoCount / cols);
-            }
-
-            // 設置網格佈局
-            videoContainer.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
-            videoContainer.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
-
             for (let i = 1; i <= videoCount; i++) {
                 const videoWrapper = document.createElement('div');
                 videoWrapper.className = 'video-wrapper';
@@ -220,6 +275,33 @@
                 });
                 players.push(player);
             }
+
+            adjustLayout();
+        }
+
+        function adjustLayout() {
+            const videoContainer = document.getElementById('videoContainer');
+            const videoCount = players.length;
+
+            if (videoCount === 0) return;
+
+            const aspectRatio = 16 / 9;
+            const containerWidth = videoContainer.clientWidth;
+            const containerHeight = videoContainer.clientHeight;
+            const containerAspectRatio = containerWidth / containerHeight;
+
+            let cols = Math.ceil(Math.sqrt(videoCount * containerAspectRatio / aspectRatio));
+            let rows = Math.ceil(videoCount / cols);
+
+            // 確保有足夠的格子來容納所有影片
+            while (cols * rows < videoCount) {
+                cols++;
+                rows = Math.ceil(videoCount / cols);
+            }
+
+            // 設置網格佈局
+            videoContainer.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+            videoContainer.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
         }
 
         function playAll() {
@@ -230,12 +312,8 @@
             players.forEach(player => player.pauseVideo());
         }
 
-        // 在窗口大小改變時重新生成影片
-        window.addEventListener('resize', () => {
-            if (players.length > 0) {
-                generateVideos();
-            }
-        });
+        // 在窗口大小改變時調整佈局
+        window.addEventListener('resize', adjustLayout);
     </script>
 </body>
 </html>
