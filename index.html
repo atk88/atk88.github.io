@@ -18,6 +18,12 @@
             font-family: 'Roboto Mono', monospace; /* 使用Roboto Mono字體 */
         }
 
+        body {
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
         .logo {
             position: absolute;
             top: 10px;
@@ -29,17 +35,12 @@
             height: 100%;
         }
 
-        .video-container {
-            display: grid;
-            gap: 10px;
-            height: calc(100vh - 200px); /* 減去控制按鈕和輸入框的高度 */
-        }
-
-        .video-container iframe {
-            width: 100%;
-            height: 100%;
-            border-radius: 10px;
-            box-shadow: 0 0 20px rgba(85, 159, 216, 0.5);
+        .controls-container {
+            position: sticky;
+            top: 0;
+            background: linear-gradient(145deg, #0d0d0d, #1a1a1a, #0d0d0d);
+            z-index: 1000;
+            padding: 10px 0;
         }
 
         .controls {
@@ -87,6 +88,33 @@
             margin-right: 5px; /* 圖標與文字之間的間距 */
         }
 
+        .video-container {
+            display: grid;
+            gap: 10px;
+            padding: 10px;
+            box-sizing: border-box;
+            flex-grow: 1;
+            overflow-y: auto;
+            height: calc(100vh - 70px); /* 減去控制列的高度 */
+        }
+
+        .video-wrapper {
+            position: relative;
+            padding-bottom: 56.25%; /* 16:9 寬高比 */
+            height: 0;
+            overflow: hidden;
+        }
+
+        .video-wrapper iframe {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(85, 159, 216, 0.5);
+        }
+
         @media (max-width: 600px) {
             .controls input, .controls button {
                 width: 100%;
@@ -99,15 +127,17 @@
     </style>
 </head>
 <body>
-    <div class="logo">
-        <img src="https://i.imgur.com/S7fBbTw.png" alt="Logo">
-    </div>
-    <div class="controls">
-        <input type="number" id="videoCount" placeholder="輸入數量" min="1" max="160">
-        <input type="text" id="videoUrl" placeholder="輸入YouTube影片網址">
-        <button onclick="generateVideos()"><i class="fas fa-video"></i>生成影片</button>
-        <button onclick="playAll()"><i class="fas fa-play"></i>播放全部</button>
-        <button onclick="pauseAll()"><i class="fas fa-pause"></i>暫停全部</button>
+    <div class="controls-container">
+        <div class="logo">
+            <img src="https://i.imgur.com/S7fBbTw.png" alt="Logo">
+        </div>
+        <div class="controls">
+            <input type="number" id="videoCount" placeholder="輸入數量" min="1" max="160">
+            <input type="text" id="videoUrl" placeholder="輸入YouTube影片網址">
+            <button onclick="generateVideos()"><i class="fas fa-video"></i>生成影片</button>
+            <button onclick="playAll()"><i class="fas fa-play"></i>播放全部</button>
+            <button onclick="pauseAll()"><i class="fas fa-pause"></i>暫停全部</button>
+        </div>
     </div>
     <div class="video-container" id="videoContainer"></div>
 
@@ -130,7 +160,7 @@
 
         function generateVideos() {
             const videoContainer = document.getElementById('videoContainer');
-            const videoCount = document.getElementById('videoCount').value;
+            const videoCount = parseInt(document.getElementById('videoCount').value);
             const videoUrl = document.getElementById('videoUrl').value;
             const videoId = extractVideoId(videoUrl);
 
@@ -146,18 +176,38 @@
             videoContainer.innerHTML = ''; // 清空現有的影片
             players = []; // 清空現有的播放器
 
+            // 計算最佳的網格佈局
+            const aspectRatio = 16 / 9;
+            const containerWidth = videoContainer.clientWidth;
+            const containerHeight = videoContainer.clientHeight;
+            const containerAspectRatio = containerWidth / containerHeight;
+
+            let cols = Math.ceil(Math.sqrt(videoCount * containerAspectRatio / aspectRatio));
+            let rows = Math.ceil(videoCount / cols);
+
+            // 確保有足夠的格子來容納所有影片
+            while (cols * rows < videoCount) {
+                cols++;
+                rows = Math.ceil(videoCount / cols);
+            }
+
             // 設置網格佈局
-            const columns = Math.ceil(Math.sqrt(videoCount));
-            videoContainer.style.gridTemplateColumns = `repeat(${columns}, 1fr)`;
+            videoContainer.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
+            videoContainer.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
 
             for (let i = 1; i <= videoCount; i++) {
+                const videoWrapper = document.createElement('div');
+                videoWrapper.className = 'video-wrapper';
+                
                 const iframe = document.createElement('iframe');
                 iframe.id = `video${i}`;
                 iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1`;
                 iframe.frameBorder = "0";
                 iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
                 iframe.allowFullscreen = true;
-                videoContainer.appendChild(iframe);
+                
+                videoWrapper.appendChild(iframe);
+                videoContainer.appendChild(videoWrapper);
 
                 // 初始化YouTube播放器
                 const player = new YT.Player(`video${i}`, {
@@ -179,6 +229,13 @@
         function pauseAll() {
             players.forEach(player => player.pauseVideo());
         }
+
+        // 在窗口大小改變時重新生成影片
+        window.addEventListener('resize', () => {
+            if (players.length > 0) {
+                generateVideos();
+            }
+        });
     </script>
 </body>
 </html>
