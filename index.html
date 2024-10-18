@@ -45,16 +45,18 @@
             z-index: 1000;
             position: sticky;
             top: 0;
+            margin-right: 50px; /* 增加右邊距離 */
         }
 
         .controls {
             display: flex;
-            flex-wrap: wrap;
+            flex-wrap: nowrap; /* 確保按鈕不換行 */
             justify-content: center;
             align-items: center;
             gap: 10px;
-            max-width: 1000px; /* 增加最大寬度 */
+            max-width: 100%;
             width: 100%;
+            flex-direction: row;
         }
 
         .controls input, .controls button {
@@ -73,7 +75,7 @@
 
         .controls input[type="text"] {
             flex-grow: 1;
-            min-width: 150px;
+            min-width: 157.5px !important; /* 確保縮短為目前的0.7倍，並使用!important */
         }
 
         .controls input:hover, .controls button:hover {
@@ -274,6 +276,14 @@
             background-color: var(--highlight-color) !important;
             color: var(--background-color) !important;
             border: 1px solid var(--highlight-color) !important;
+            padding: 5px 10px;
+            font-size: 14px;
+            border-radius: 4px;
+            transition: background-color 1.5s ease, transform 0.1s ease;
+            display: inline-flex; /* 使用 inline-flex 來對齊內容 */
+            align-items: center; /* 垂直居中 */
+            justify-content: center; /* 水平居中 */
+            height: 30px; /* 確保高度一致 */
         }
 
         .smtv-button:hover {
@@ -309,7 +319,7 @@
 
         .controls input[type="number"], .controls input[type="text"] {
             text-align: center;
-            color: var(--text-color); /* 中等亮度的灰色 */
+            color: var(--text-color); /* 中等亮度灰色 */
         }
 
         .controls input[type="number"]::placeholder, .controls input[type="text"]::placeholder {
@@ -339,8 +349,10 @@
             <button onclick="playAll()"><i class="fas fa-play"></i>播放全部</button>
             <button onclick="pauseAll()"><i class="fas fa-pause"></i>暫停全部</button>
             <button onclick="clearAll()"><i class="fas fa-stop"></i> 清除全部</button>
+            <button onclick="saveSettings()"><i class="fas fa-save"></i> 儲存設定</button> <!-- 移動到這裡 -->
             <button class="smtv-button" onclick="addSMTVVideo()"><i class="fas fa-heart"></i>SMTV</button>
-            <button onclick="saveSettings()"><i class="fas fa-save"></i> 儲存設定</button> <!-- 新增按鈕 -->
+            <button class="smtv-button" onclick="addLiveVideo('UCyYoY9S20IXXPLPrQWE5RfA', '萬兆加持')"><i class="fas fa-moon"></i>萬兆加持</button>
+            <button class="smtv-button" onclick="addLiveVideo('UC1vy_AzF3zGK-lde_b-EGGQ', '千級加持')"><i class="fas fa-star"></i>千級加持</button>
             <button class="close-menu" onclick="toggleMenu()"><i class="fas fa-times"></i> 關閉選單</button>
         </div>
     </div>
@@ -362,7 +374,7 @@
         const players = [];
 
         function onYouTubeIframeAPIReady() {
-            // 這個函數會在YouTube IFrame API加載完成後被調用
+            // 這個函數會在YouTube IFrame API加載完成被調用
         }
 
         const extractVideoId = (url) => {
@@ -377,7 +389,7 @@
             const videoId = extractVideoId(videoUrl);
 
             if (videoCount < 1 || videoCount > 160) {
-                alert("請輸入1到160之間的數量");
+                alert("請輸入1到160間的數量");
                 return;
             }
             if (!videoId) {
@@ -405,7 +417,7 @@
                 videoWrapper.appendChild(iframe);
                 videoContainer.appendChild(videoWrapper);
 
-                // 初始化YouTube播放器
+                // 始化YouTube播放器
                 const player = new YT.Player(iframe.id, {
                     events: {
                         'onReady': (event) => {
@@ -453,43 +465,85 @@
             players.forEach(player => player.pauseVideo());
         }
 
+        function getVideoCount() {
+            const videoCountInput = document.getElementById('videoCount');
+            const videoCount = parseInt(videoCountInput.value);
+            return isNaN(videoCount) || videoCount <= 0 ? 1 : videoCount; // 默認為1
+        }
+
         function addSMTVVideo() {
-            const videoContainer = document.getElementById('videoContainer');
             const videoId = 'ZzWBpGwKoaI'; // 固定的影片ID
-
-            const videoWrapper = document.createElement('div');
-            videoWrapper.className = 'video-wrapper';
-
-            const iframe = document.createElement('iframe');
-            iframe.id = `videoSMTV${players.length}`; // 確保ID唯一
-            iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1`;
-            iframe.frameBorder = "0";
-            iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
-            iframe.allowFullscreen = true;
-
-            videoWrapper.appendChild(iframe);
-            videoContainer.appendChild(videoWrapper);
-
-            // 初始化YouTube播放器
-            const player = new YT.Player(iframe.id, {
-                events: {
-                    'onReady': (event) => {
-                        event.target.setVolume(1); // 設定音量為最低音量1
-                        event.target.setPlaybackQuality('small'); // 設定解析度為最低
-                    }
-                }
-            });
-            players.push(player); // 確保播放器被加入到players陣列中
-
+            const videoCount = getVideoCount();
+            for (let i = 0; i < videoCount; i++) {
+                addVideo(videoId);
+            }
             adjustLayout();
         }
 
-        // 在窗口大小改變時調整佈局
-        window.addEventListener('resize', adjustLayout);
+        const apiKeys = [
+            'AIzaSyA_wiYnVQqXobQ52Xkya3Dk_VetYNjDF4c',
+            'AIzaSyBSGKku6wCR_cUBlhXYwjmJgRZUbT8gUFM',
+            'AIzaSyD4G6wFBNcOzp0yq7CVCtjVcfeUUsBt0b8',
+            'AIzaSyAyd6Dpu2995ccm550XUiuUTUdrFCK8olY',
+            'AIzaSyBqpUcTK4FZhSlw9yXLZ10D5Lonnx2DxUE',
+            'AIzaSyC5hSnt6Geo7JvfwGTijxysgXn3r9DIZc8'
+            
+        ];
+        let currentKeyIndex = 0;
 
-        function toggleMenu() {
-            const controlsContainer = document.getElementById('controlsContainer');
-            controlsContainer.classList.toggle('active');
+        function getApiKey() {
+            const apiKey = apiKeys[currentKeyIndex];
+            currentKeyIndex = (currentKeyIndex + 1) % apiKeys.length;
+            return apiKey;
+        }
+
+        function fetchLiveVideo(channelId, buttonName) {
+            const cacheKey = `liveVideo_${channelId}`;
+            const cachedData = localStorage.getItem(cacheKey);
+
+            if (cachedData) {
+                console.log('Using cached data:', JSON.parse(cachedData));
+                return Promise.resolve(JSON.parse(cachedData));
+            }
+
+            const apiKey = getApiKey();
+            const apiUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&channelId=${channelId}&eventType=live&type=video&key=${apiKey}`;
+
+            return fetch(apiUrl)
+                .then(response => {
+                    if (!response.ok) {
+                        console.error('Network response was not ok:', response.statusText);
+                        throw new Error('Network response was not ok');
+                    }
+                    return response.json();
+                })
+                .then(data => {
+                    console.log('API Response:', data);
+                    if (data.items && data.items.length > 0) {
+                        localStorage.setItem(cacheKey, JSON.stringify(data));
+                    }
+                    return data;
+                })
+                .catch(error => {
+                    console.error('Error fetching live video:', error);
+                    alert('無法獲取直播影片，請稍後再試');
+                });
+        }
+
+        function addLiveVideo(channelId, buttonName) {
+            const videoCount = getVideoCount();
+            fetchLiveVideo(channelId, buttonName)
+                .then(data => {
+                    if (data && data.items && data.items.length > 0) {
+                        const videoId = data.items[0].id.videoId;
+                        for (let i = 0; i < videoCount; i++) {
+                            addVideo(videoId);
+                        }
+                        adjustLayout(); // 確保佈局調整
+                    } else {
+                        alert(`${buttonName}目前沒有直播影片`);
+                    }
+                });
         }
 
         function clearAll() {
@@ -500,22 +554,36 @@
 
         function saveSettings() {
             const videoSettings = players.map(player => {
-                return player.getVideoData().video_id;
+                return {
+                    videoId: player.getVideoData().video_id,
+                    count: 1 // 每個播放器代表一個影片
+                };
             });
 
-            const settingsString = videoSettings.join(',');
-            const shareableUrl = `${window.location.origin}${window.location.pathname}?videos=${encodeURIComponent(settingsString)}`;
-            alert(`分享此網址以保存設定: ${shareableUrl}`);
+            localStorage.setItem('videoSettings', JSON.stringify(videoSettings));
+
+            // 生成專屬網址
+            const baseUrl = window.location.origin + window.location.pathname;
+            const settingsParam = encodeURIComponent(JSON.stringify(videoSettings));
+            const shareUrl = `${baseUrl}?settings=${settingsParam}`;
+
+            // 複製到剪貼簿
+            navigator.clipboard.writeText(shareUrl).then(() => {
+                alert('設定已儲存，專屬網址已複製到剪貼簿');
+            }).catch(err => {
+                console.error('複製到剪貼簿失敗:', err);
+                alert('無法複製網址到剪貼簿');
+            });
         }
 
         function loadSettings() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const videosParam = urlParams.get('videos');
-
-            if (videosParam) {
-                const videoIds = videosParam.split(',');
-                videoIds.forEach(videoId => {
-                    addVideo(videoId);
+            const savedSettings = localStorage.getItem('videoSettings');
+            if (savedSettings) {
+                const videoSettings = JSON.parse(savedSettings);
+                videoSettings.forEach(setting => {
+                    for (let i = 0; i < setting.count; i++) {
+                        addVideo(setting.videoId);
+                    }
                 });
                 adjustLayout();
             }
@@ -523,11 +591,13 @@
 
         function addVideo(videoId) {
             const videoContainer = document.getElementById('videoContainer');
+            const currentVideoCount = players.length;
+
             const videoWrapper = document.createElement('div');
             videoWrapper.className = 'video-wrapper';
 
             const iframe = document.createElement('iframe');
-            iframe.id = `video${players.length}`; // 確保ID唯一
+            iframe.id = `video${currentVideoCount}`; // 確保ID唯一
             iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1`;
             iframe.frameBorder = "0";
             iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
@@ -553,6 +623,11 @@
             document.body.style.opacity = '1';
             loadSettings();
         });
+
+        function toggleMenu() {
+            const controlsContainer = document.getElementById('controlsContainer');
+            controlsContainer.classList.toggle('active');
+        }
     </script>
 </body>
 </html>
