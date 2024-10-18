@@ -6,15 +6,20 @@
     <title>SMTV多螢幕播放</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
-        @import url('https://fonts.googleapis.com/css2?family=Roboto+Mono:wght@400;700&display=swap');
+        :root {
+            --primary-color: #0055FF;
+            --background-color: #1a1a1a;
+            --highlight-color: #FFF00D;
+            --text-color: #cccccc;
+        }
 
         body, html {
             margin: 0;
             padding: 0;
             height: 100%;
             width: 100%;
-            background: linear-gradient(145deg, #0d0d0d, #1a1a1a, #0d0d0d); /* 漸變背景 */
-            color: #0055FF; /* 文字顏色設為#0055FF */
+            background: linear-gradient(145deg, #0d0d0d, var(--background-color), #0d0d0d); /* 漸變背景 */
+            color: var(--primary-color); /* 文字顏色設為#0055FF */
             font-family: 'Roboto Mono', monospace; /* 使用Roboto Mono字體 */
         }
 
@@ -24,7 +29,7 @@
             min-height: 100vh;
             margin: 0;
             overflow: hidden;
-            background: linear-gradient(145deg, #0d0d0d, #1a1a1a, #0d0d0d);
+            background: linear-gradient(145deg, #0d0d0d, var(--background-color), #0d0d0d);
             opacity: 0;
             transition: opacity 0.5s ease-in;
             background-size: 200% 200%;
@@ -55,9 +60,9 @@
         .controls input, .controls button {
             padding: 5px 10px;
             font-size: 14px;
-            background-color: #1a1a1a;
-            color: #0055FF;
-            border: 1px solid #0055FF;
+            background-color: var(--background-color);
+            color: var(--primary-color);
+            border: 1px solid var(--primary-color);
             border-radius: 4px;
             transition: background-color 1.5s ease, transform 0.1s ease;
         }
@@ -72,8 +77,8 @@
         }
 
         .controls input:hover, .controls button:hover {
-            background-color: #0055FF;
-            color: #1a1a1a;
+            background-color: var(--primary-color);
+            color: var(--background-color);
         }
 
         .controls input:active, .controls button:active {
@@ -183,6 +188,11 @@
             .logo img {
                 height: 20px;
             }
+
+            /* 確保新按鈕的樣式一致 */
+            .controls button i.fa-stop {
+                font-size: 16px;
+            }
         }
 
         /* 新增背景動畫 */
@@ -200,19 +210,19 @@
             z-index: 1200;
             cursor: pointer;
             font-size: 24px;
-            color: #0055FF;
+            color: var(--primary-color);
             transition: background-color 1.5s ease, transform 0.1s ease;
         }
 
         .menu-toggle:hover {
-            background-color: #0055FF;
-            color: #1a1a1a;
+            background-color: var(--primary-color);
+            color: var(--background-color);
         }
 
         .close-menu {
             display: none;
             font-size: 16px;
-            color: #1a1a1a !important;
+            color: var(--background-color) !important;
             background-color: #FF3637 !important;
             border: 1px solid #FF3637 !important;
             border-radius: 4px;
@@ -222,7 +232,7 @@
         }
 
         .close-menu:hover {
-            background-color: #1a1a1a !important;
+            background-color: var(--background-color) !important;
             color: #FF3637 !important;
         }
 
@@ -261,14 +271,14 @@
         }
 
         .smtv-button {
-            background-color: #FFF00D !important;
-            color: #1a1a1a !important;
-            border: 1px solid #FFF00D !important;
+            background-color: var(--highlight-color) !important;
+            color: var(--background-color) !important;
+            border: 1px solid var(--highlight-color) !important;
         }
 
         .smtv-button:hover {
-            background-color: #1a1a1a !important;
-            color: #FFF00D !important;
+            background-color: var(--background-color) !important;
+            color: var(--highlight-color) !important;
         }
 
         @media (max-width: 768px) {
@@ -299,11 +309,11 @@
 
         .controls input[type="number"], .controls input[type="text"] {
             text-align: center;
-            color: #cccccc; /* 中等亮度的灰色 */
+            color: var(--text-color); /* 中等亮度的灰色 */
         }
 
         .controls input[type="number"]::placeholder, .controls input[type="text"]::placeholder {
-            color: #cccccc; /* 中等亮度的灰色 */
+            color: var(--text-color); /* 中等亮度的灰色 */
         }
 
         .controls input[type="number"]:focus, .controls input[type="text"]:focus {
@@ -328,7 +338,9 @@
             <button onclick="generateVideos()"><i class="fas fa-video"></i>生成影片</button>
             <button onclick="playAll()"><i class="fas fa-play"></i>播放全部</button>
             <button onclick="pauseAll()"><i class="fas fa-pause"></i>暫停全部</button>
-            <button class="smtv-button" onclick="addSMTVVideo()"><i class="fas fa-heart"></i>SMTV</button> <!-- 確認類名 -->
+            <button onclick="clearAll()"><i class="fas fa-stop"></i> 清除全部</button>
+            <button class="smtv-button" onclick="addSMTVVideo()"><i class="fas fa-heart"></i>SMTV</button>
+            <button onclick="saveSettings()"><i class="fas fa-save"></i> 儲存設定</button> <!-- 新增按鈕 -->
             <button class="close-menu" onclick="toggleMenu()"><i class="fas fa-times"></i> 關閉選單</button>
         </div>
     </div>
@@ -347,18 +359,18 @@
         var firstScriptTag = document.getElementsByTagName('script')[0];
         firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
 
-        var players = [];
+        const players = [];
 
         function onYouTubeIframeAPIReady() {
             // 這個函數會在YouTube IFrame API加載完成後被調用
         }
 
-        function extractVideoId(url) {
+        const extractVideoId = (url) => {
             const urlObj = new URL(url);
             return urlObj.searchParams.get("v") || urlObj.pathname.split('/').pop();
-        }
+        };
 
-        function generateVideos() {
+        const generateVideos = () => {
             const videoContainer = document.getElementById('videoContainer');
             const videoCount = parseInt(document.getElementById('videoCount').value);
             const videoUrl = document.getElementById('videoUrl').value;
@@ -373,15 +385,18 @@
                 return;
             }
 
-            videoContainer.innerHTML = ''; // 清空現有的影片
-            players = []; // 清空現有的播放器
+            // 不再清空現有的影片
+            // videoContainer.innerHTML = ''; 
+            // players.length = 0; 
+
+            const currentVideoCount = players.length; // 獲取當前影片數量
 
             for (let i = 1; i <= videoCount; i++) {
                 const videoWrapper = document.createElement('div');
                 videoWrapper.className = 'video-wrapper';
                 
                 const iframe = document.createElement('iframe');
-                iframe.id = `video${i}`;
+                iframe.id = `video${currentVideoCount + i}`; // 確保ID唯一
                 iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1`;
                 iframe.frameBorder = "0";
                 iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
@@ -391,7 +406,7 @@
                 videoContainer.appendChild(videoWrapper);
 
                 // 初始化YouTube播放器
-                const player = new YT.Player(`video${i}`, {
+                const player = new YT.Player(iframe.id, {
                     events: {
                         'onReady': (event) => {
                             event.target.setVolume(1); // 設定音量為最低音量1
@@ -403,7 +418,7 @@
             }
 
             adjustLayout();
-        }
+        };
 
         function adjustLayout() {
             const videoContainer = document.getElementById('videoContainer');
@@ -476,6 +491,68 @@
             const controlsContainer = document.getElementById('controlsContainer');
             controlsContainer.classList.toggle('active');
         }
+
+        function clearAll() {
+            const videoContainer = document.getElementById('videoContainer');
+            videoContainer.innerHTML = ''; // 清空影片容器
+            players.length = 0; // 清空播放器陣列
+        }
+
+        function saveSettings() {
+            const videoSettings = players.map(player => {
+                return player.getVideoData().video_id;
+            });
+
+            const settingsString = videoSettings.join(',');
+            const shareableUrl = `${window.location.origin}${window.location.pathname}?videos=${encodeURIComponent(settingsString)}`;
+            alert(`分享此網址以保存設定: ${shareableUrl}`);
+        }
+
+        function loadSettings() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const videosParam = urlParams.get('videos');
+
+            if (videosParam) {
+                const videoIds = videosParam.split(',');
+                videoIds.forEach(videoId => {
+                    addVideo(videoId);
+                });
+                adjustLayout();
+            }
+        }
+
+        function addVideo(videoId) {
+            const videoContainer = document.getElementById('videoContainer');
+            const videoWrapper = document.createElement('div');
+            videoWrapper.className = 'video-wrapper';
+
+            const iframe = document.createElement('iframe');
+            iframe.id = `video${players.length}`; // 確保ID唯一
+            iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1`;
+            iframe.frameBorder = "0";
+            iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+            iframe.allowFullscreen = true;
+
+            videoWrapper.appendChild(iframe);
+            videoContainer.appendChild(videoWrapper);
+
+            // 初始化YouTube播放器
+            const player = new YT.Player(iframe.id, {
+                events: {
+                    'onReady': (event) => {
+                        event.target.setVolume(1); // 設定音量為最低音量1
+                        event.target.setPlaybackQuality('small'); // 設定解析度為最低
+                    }
+                }
+            });
+            players.push(player);
+        }
+
+        // 在頁面加載時自動載入儲存的設定
+        window.addEventListener('load', () => {
+            document.body.style.opacity = '1';
+            loadSettings();
+        });
     </script>
 </body>
 </html>
