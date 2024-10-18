@@ -14,7 +14,7 @@
             height: 100%;
             width: 100%;
             background: linear-gradient(145deg, #0d0d0d, #1a1a1a, #0d0d0d); /* 漸變背景 */
-            color: #559FD8; /* 文字顏色設為#559FD8 */
+            color: #0055FF; /* 文字顏色設為#0055FF */
             font-family: 'Roboto Mono', monospace; /* 使用Roboto Mono字體 */
         }
 
@@ -56,8 +56,8 @@
             padding: 5px 10px;
             font-size: 14px;
             background-color: #1a1a1a;
-            color: #559FD8;
-            border: 1px solid #559FD8;
+            color: #0055FF;
+            border: 1px solid #0055FF;
             border-radius: 4px;
             transition: background-color 1.5s ease, transform 0.1s ease;
         }
@@ -72,7 +72,7 @@
         }
 
         .controls input:hover, .controls button:hover {
-            background-color: #559FD8;
+            background-color: #0055FF;
             color: #1a1a1a;
         }
 
@@ -81,20 +81,15 @@
         }
 
         .logo {
-            position: fixed; /* 固定在右上角 */
+            position: fixed;
             top: 10px;
-            right: 10px;
-            z-index: 1100; /* 確保在其他元素之上 */
+            right: 10px; /* 大尺寸螢幕時在右邊 */
+            z-index: 1100;
         }
 
         .logo img {
             height: 30px;
-            filter: brightness(1.2); /* 增加亮度 */
-            transition: transform 0.3s;
-        }
-
-        .logo img:hover {
-            transform: rotate(10deg);
+            filter: brightness(1.2);
         }
 
         .video-container {
@@ -146,9 +141,8 @@
             }
 
             .logo {
-                position: static;
-                align-self: flex-end;
-                margin-bottom: 5px;
+                right: auto;
+                left: calc(100% - 40px); /* 與menu-toggle對稱 */
             }
 
             .video-container {
@@ -159,16 +153,19 @@
         @media (max-width: 480px) {
             .controls-container {
                 flex-direction: row;
+                flex-wrap: wrap; /* 允許換行 */
                 justify-content: space-between;
             }
 
             .controls input, .controls button {
                 font-size: 10px;
                 padding: 2px 4px;
+                flex: 1 1 45%; /* 每個按鈕占45%的寬度，允許換行 */
+                margin: 2px; /* 增加間距 */
             }
 
             .controls button {
-                width: 30px;
+                width: auto; /* 自動調整寬度 */
                 height: 30px;
                 display: flex;
                 justify-content: center;
@@ -194,16 +191,145 @@
             50% { background-position: 100% 50%; }
             100% { background-position: 0% 50%; }
         }
+
+        .menu-toggle {
+            display: none;
+            position: fixed;
+            top: 10px;
+            left: 10px;
+            z-index: 1200;
+            cursor: pointer;
+            font-size: 24px;
+            color: #0055FF;
+            transition: background-color 1.5s ease, transform 0.1s ease;
+        }
+
+        .menu-toggle:hover {
+            background-color: #0055FF;
+            color: #1a1a1a;
+        }
+
+        .close-menu {
+            display: none;
+            font-size: 16px;
+            color: #1a1a1a !important;
+            background-color: #FF3637 !important;
+            border: 1px solid #FF3637 !important;
+            border-radius: 4px;
+            padding: 5px 10px;
+            cursor: pointer;
+            transition: background-color 1.5s ease, transform 0.1s ease;
+        }
+
+        .close-menu:hover {
+            background-color: #1a1a1a !important;
+            color: #FF3637 !important;
+        }
+
+        @media (max-width: 768px) {
+            .menu-toggle {
+                display: block;
+            }
+
+            .logo {
+                right: auto;
+                left: calc(100% - 40px); /* 與menu-toggle對稱 */
+            }
+
+            .controls-container {
+                display: none;
+                position: fixed;
+                top: 0;
+                left: 0;
+                width: 100%;
+                background: rgba(13, 13, 13, 0.9);
+                z-index: 1100;
+                flex-direction: column;
+                align-items: center;
+                padding: 10px;
+            }
+
+            .controls-container.active {
+                display: flex;
+            }
+
+            .close-menu {
+                display: block;
+                align-self: flex-end;
+                margin-right: 10px; /* 確保不超出邊界 */
+            }
+        }
+
+        .smtv-button {
+            background-color: #FFF00D !important;
+            color: #1a1a1a !important;
+            border: 1px solid #FFF00D !important;
+        }
+
+        .smtv-button:hover {
+            background-color: #1a1a1a !important;
+            color: #FFF00D !important;
+        }
+
+        @media (max-width: 768px) {
+            .controls {
+                display: flex;
+                flex-direction: column;
+                align-items: center;
+                width: 60%;
+                margin: 0 auto;
+            }
+
+            .controls input, .controls button {
+                width: 100%;
+                font-size: 12px;
+                padding: 5px;
+                box-sizing: border-box;
+                margin: 5px 0; /* 確保所有按鈕和輸入框有一致的上下間距 */
+            }
+
+            .controls input[type="text"] {
+                width: 100%;
+            }
+
+            .smtv-button, .close-menu {
+                width: 100%;
+            }
+        }
+
+        .controls input[type="number"], .controls input[type="text"] {
+            text-align: center;
+            color: #cccccc; /* 中等亮度的灰色 */
+        }
+
+        .controls input[type="number"]::placeholder, .controls input[type="text"]::placeholder {
+            color: #cccccc; /* 中等亮度的灰色 */
+        }
+
+        .controls input[type="number"]:focus, .controls input[type="text"]:focus {
+            animation: none; /* 聚焦時停止閃爍 */
+        }
+
+        @keyframes blink {
+            50% {
+                opacity: 0;
+            }
+        }
     </style>
 </head>
 <body>
-    <div class="controls-container">
+    <div class="menu-toggle" onclick="toggleMenu()">
+        <i class="fas fa-bars"></i> <!-- 確保使用正確的圖標 -->
+    </div>
+    <div class="controls-container" id="controlsContainer">
         <div class="controls">
-            <input type="number" id="videoCount" placeholder="輸入數量" min="1" max="160">
-            <input type="text" id="videoUrl" placeholder="輸入YouTube影片網址">
+            <input type="number" id="videoCount" placeholder="數量" min="1" max="160">
+            <input type="text" id="videoUrl" placeholder="YouTube影片網址">
             <button onclick="generateVideos()"><i class="fas fa-video"></i>生成影片</button>
             <button onclick="playAll()"><i class="fas fa-play"></i>播放全部</button>
             <button onclick="pauseAll()"><i class="fas fa-pause"></i>暫停全部</button>
+            <button class="smtv-button" onclick="addSMTVVideo()"><i class="fas fa-heart"></i>SMTV</button> <!-- 確認類名 -->
+            <button class="close-menu" onclick="toggleMenu()"><i class="fas fa-times"></i> 關閉選單</button>
         </div>
     </div>
     <div class="logo">
@@ -312,8 +438,44 @@
             players.forEach(player => player.pauseVideo());
         }
 
+        function addSMTVVideo() {
+            const videoContainer = document.getElementById('videoContainer');
+            const videoId = 'ZzWBpGwKoaI'; // 固定的影片ID
+
+            const videoWrapper = document.createElement('div');
+            videoWrapper.className = 'video-wrapper';
+
+            const iframe = document.createElement('iframe');
+            iframe.id = `videoSMTV${players.length}`; // 確保ID唯一
+            iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1`;
+            iframe.frameBorder = "0";
+            iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
+            iframe.allowFullscreen = true;
+
+            videoWrapper.appendChild(iframe);
+            videoContainer.appendChild(videoWrapper);
+
+            // 初始化YouTube播放器
+            const player = new YT.Player(iframe.id, {
+                events: {
+                    'onReady': (event) => {
+                        event.target.setVolume(1); // 設定音量為最低音量1
+                        event.target.setPlaybackQuality('small'); // 設定解析度為最低
+                    }
+                }
+            });
+            players.push(player); // 確保播放器被加入到players陣列中
+
+            adjustLayout();
+        }
+
         // 在窗口大小改變時調整佈局
         window.addEventListener('resize', adjustLayout);
+
+        function toggleMenu() {
+            const controlsContainer = document.getElementById('controlsContainer');
+            controlsContainer.classList.toggle('active');
+        }
     </script>
 </body>
 </html>
