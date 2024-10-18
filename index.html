@@ -364,7 +364,30 @@
     <script>
         window.addEventListener('load', () => {
             document.body.style.opacity = '1';
+            loadSettingsFromUrl();
         });
+
+        function loadSettingsFromUrl() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const settingsParam = urlParams.get('settings');
+
+            if (settingsParam) {
+                try {
+                    const videoSettings = JSON.parse(decodeURIComponent(settingsParam));
+                    videoSettings.forEach(setting => {
+                        for (let i = 0; i < setting.count; i++) {
+                            addVideo(setting.videoId);
+                        }
+                    });
+                    adjustLayout();
+                } catch (error) {
+                    console.error('Error parsing settings from URL:', error);
+                    alert('無法加載影片設定，請檢查網址是否正確');
+                }
+            } else {
+                loadSettings(); // 如果沒有URL參數，則加載本地儲存的設定
+            }
+        }
 
         var tag = document.createElement('script');
         tag.src = "https://www.youtube.com/iframe_api";
