@@ -475,6 +475,15 @@
                 rows = Math.ceil(videoCount / cols);
             }
 
+            // 修正：確保行列數不會超過必要的數量
+            if (cols * rows > videoCount) {
+                if (cols > rows) {
+                    cols--;
+                } else {
+                    rows--;
+                }
+            }
+
             // 設置網格佈局
             videoContainer.style.gridTemplateColumns = `repeat(${cols}, 1fr)`;
             videoContainer.style.gridTemplateRows = `repeat(${rows}, 1fr)`;
