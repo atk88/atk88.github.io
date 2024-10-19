@@ -490,11 +490,19 @@
         }
 
         function playAll() {
-            players.forEach(player => player.playVideo());
+            players.forEach(player => {
+                if (player && typeof player.playVideo === 'function') {
+                    player.playVideo();
+                }
+            });
         }
 
         function pauseAll() {
-            players.forEach(player => player.pauseVideo());
+            players.forEach(player => {
+                if (player && typeof player.pauseVideo === 'function') {
+                    player.pauseVideo();
+                }
+            });
         }
 
         function getVideoCount() {
@@ -599,20 +607,25 @@
                 };
             });
 
-            localStorage.setItem('videoSettings', JSON.stringify(videoSettings));
+            try {
+                localStorage.setItem('videoSettings', JSON.stringify(videoSettings));
 
-            // 生成專屬網址
-            const baseUrl = window.location.origin + window.location.pathname;
-            const settingsParam = encodeURIComponent(JSON.stringify(videoSettings));
-            const shareUrl = `${baseUrl}?settings=${settingsParam}`;
+                // 生成專屬網址
+                const baseUrl = window.location.origin + window.location.pathname;
+                const settingsParam = encodeURIComponent(JSON.stringify(videoSettings));
+                const shareUrl = `${baseUrl}?settings=${settingsParam}`;
 
-            // 複製到剪貼簿
-            navigator.clipboard.writeText(shareUrl).then(() => {
-                alert('設定已儲存，專屬網址已複製到剪貼簿');
-            }).catch(err => {
-                console.error('複製到剪貼簿失敗:', err);
-                alert('無法複製網址到剪貼簿');
-            });
+                // 複製到剪貼簿
+                navigator.clipboard.writeText(shareUrl).then(() => {
+                    alert('設定已儲存，專屬網址已複製到剪貼簿');
+                }).catch(err => {
+                    console.error('複製到剪貼簿失敗:', err);
+                    alert('無法複製網址到剪貼簿');
+                });
+            } catch (error) {
+                console.error('儲存設定失敗:', error);
+                alert('儲存設定失敗，請檢查瀏覽器設定');
+            }
         }
 
         function loadSettings() {
