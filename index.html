@@ -374,6 +374,7 @@
             if (settingsParam) {
                 try {
                     const videoSettings = JSON.parse(decodeURIComponent(settingsParam));
+                    clearAll(); // 清空現有的影片，避免重複
                     videoSettings.forEach(setting => {
                         for (let i = 0; i < setting.count; i++) {
                             addVideo(setting.videoId);
@@ -469,7 +470,7 @@
             let cols = Math.ceil(Math.sqrt(videoCount * containerAspectRatio / aspectRatio));
             let rows = Math.ceil(videoCount / cols);
 
-            // 確保有足夠的格子來容納所有影片
+            // 確有足夠的格子來容納所有影片
             while (cols * rows < videoCount) {
                 cols++;
                 rows = Math.ceil(videoCount / cols);
@@ -602,13 +603,19 @@
         function loadSettings() {
             const savedSettings = localStorage.getItem('videoSettings');
             if (savedSettings) {
-                const videoSettings = JSON.parse(savedSettings);
-                videoSettings.forEach(setting => {
-                    for (let i = 0; i < setting.count; i++) {
-                        addVideo(setting.videoId);
-                    }
-                });
-                adjustLayout();
+                try {
+                    const videoSettings = JSON.parse(savedSettings);
+                    clearAll(); // 清空現有的影片，避免重複
+                    videoSettings.forEach(setting => {
+                        for (let i = 0; i < setting.count; i++) {
+                            addVideo(setting.videoId);
+                        }
+                    });
+                    adjustLayout();
+                } catch (error) {
+                    console.error('Error parsing saved settings:', error);
+                    alert('無法加載本地儲存的影片設定');
+                }
             }
         }
 
