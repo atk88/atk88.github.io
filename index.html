@@ -349,7 +349,6 @@
             <button onclick="playAll()"><i class="fas fa-play"></i>播放全部</button>
             <button onclick="pauseAll()"><i class="fas fa-pause"></i>暫停全部</button>
             <button onclick="clearAll()"><i class="fas fa-stop"></i> 清除全部</button>
-            <button onclick="saveSettings()"><i class="fas fa-save"></i> 儲存設定</button> <!-- 移動到這裡 -->
             <button class="smtv-button" onclick="addSMTVVideo()"><i class="fas fa-sun"></i>SMTV</button>
             <button class="smtv-button" onclick="addLiveVideo('UCyYoY9S20IXXPLPrQWE5RfA', '萬兆加持')"><i class="fas fa-moon"></i>萬兆加持</button>
             <button class="smtv-button" onclick="addLiveVideo('UC1vy_AzF3zGK-lde_b-EGGQ', '千級加持')"><i class="fas fa-star"></i>千級加持</button>
@@ -397,7 +396,7 @@
         const players = [];
 
         function onYouTubeIframeAPIReady() {
-            // 這個函數會在YouTube IFrame API加載完成被調用
+            // 確保 API 已加載
         }
 
         const extractVideoId = (url) => {
@@ -405,7 +404,7 @@
             return urlObj.searchParams.get("v") || urlObj.pathname.split('/').pop();
         };
 
-        const generateVideos = () => {
+        function generateVideos() {
             const videoContainer = document.getElementById('videoContainer');
             const videoCount = parseInt(document.getElementById('videoCount').value);
             const videoUrl = document.getElementById('videoUrl').value;
@@ -420,18 +419,14 @@
                 return;
             }
 
-            // 不再清空現有的影片
-            // videoContainer.innerHTML = ''; 
-            // players.length = 0; 
-
-            const currentVideoCount = players.length; // 獲取當前影片數量
+            const currentVideoCount = players.length;
 
             for (let i = 1; i <= videoCount; i++) {
                 const videoWrapper = document.createElement('div');
                 videoWrapper.className = 'video-wrapper';
                 
                 const iframe = document.createElement('iframe');
-                iframe.id = `video${currentVideoCount + i}`; // 確保ID唯一
+                iframe.id = `video${currentVideoCount + i}`;
                 iframe.src = `https://www.youtube.com/embed/${videoId}?enablejsapi=1`;
                 iframe.frameBorder = "0";
                 iframe.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture";
@@ -440,12 +435,11 @@
                 videoWrapper.appendChild(iframe);
                 videoContainer.appendChild(videoWrapper);
 
-                // 始化YouTube播放器
                 const player = new YT.Player(iframe.id, {
                     events: {
                         'onReady': (event) => {
-                            event.target.setVolume(1); // 設定音量為最低音量1
-                            event.target.setPlaybackQuality('small'); // 設定解析度為最低
+                            event.target.setVolume(1);
+                            event.target.setPlaybackQuality('small');
                         }
                     }
                 });
@@ -453,7 +447,8 @@
             }
 
             adjustLayout();
-        };
+            autoSaveSettings(); // 確保自動儲存
+        }
 
         function adjustLayout() {
             const videoContainer = document.getElementById('videoContainer');
@@ -597,35 +592,6 @@
                     localStorage.removeItem(key);
                 }
             });
-        }
-
-        function saveSettings() {
-            const videoSettings = players.map(player => {
-                return {
-                    videoId: player.getVideoData().video_id,
-                    count: 1 // 每個播放器代表一個影片
-                };
-            });
-
-            try {
-                localStorage.setItem('videoSettings', JSON.stringify(videoSettings));
-
-                // 生成專屬網址
-                const baseUrl = window.location.origin + window.location.pathname;
-                const settingsParam = encodeURIComponent(JSON.stringify(videoSettings));
-                const shareUrl = `${baseUrl}?settings=${settingsParam}`;
-
-                // 複製到剪貼簿
-                navigator.clipboard.writeText(shareUrl).then(() => {
-                    alert('設定已儲存，專屬網址已複製到剪貼簿');
-                }).catch(err => {
-                    console.error('複製到剪貼簿失敗:', err);
-                    alert('無法複製網址到剪貼簿');
-                });
-            } catch (error) {
-                console.error('儲存設定失敗:', error);
-                alert('儲存設定失敗，請檢查瀏覽器設定');
-            }
         }
 
         function loadSettings() {
