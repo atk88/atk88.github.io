@@ -592,6 +592,11 @@
                     localStorage.removeItem(key);
                 }
             });
+
+            // 清除影片設定的儲存
+            localStorage.removeItem('videoSettings');
+
+            console.log('All videos and settings cleared.');
         }
 
         function loadSettings() {
