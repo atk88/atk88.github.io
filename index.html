@@ -354,6 +354,7 @@
             <button class="smtv-button" onclick="addLiveVideo('UCyYoY9S20IXXPLPrQWE5RfA', '萬兆加持')"><i class="fas fa-moon"></i>萬兆加持</button>
             <button class="smtv-button" onclick="addLiveVideo('UC1vy_AzF3zGK-lde_b-EGGQ', '千級加持')"><i class="fas fa-star"></i>千級加持</button>
             <button class="close-menu" onclick="toggleMenu()"><i class="fas fa-times"></i> 關閉選單</button>
+            <button class="smtv-button" onclick="toggleLanguage()"><i class="fas fa-globe"></i> English</button>
         </div>
     </div>
     <div class="logo">
@@ -382,7 +383,7 @@
                     adjustLayout();
                 } catch (error) {
                     console.error('Error parsing settings from URL:', error);
-                    alert('無法加載影片設定，請檢查網址是否正確');
+                    alert('無法加載影片設定，請檢���網址是否正確');
                 }
             } else {
                 loadSettings(); // 如果沒有URL參數，則加載本地儲存的設定
@@ -662,6 +663,62 @@
             });
             localStorage.setItem('videoSettings', JSON.stringify(Object.values(videoSettings)));
             alert('目前的影片佈局已儲存');
+        }
+
+        // 新增語言切換功能
+        let currentLanguage = 'zh'; // 默認為中文
+
+        const translations = {
+            'zh': {
+                'generateVideos': '生成影片',
+                'playAll': '播放全部',
+                'pauseAll': '暫停全部',
+                'clearAll': '清除全部',
+                'saveCurrentLayout': '儲存設定',
+                'addSMTVVideo': 'SMTV',
+                'addLiveVideo1': '萬兆加持',
+                'addLiveVideo2': '千級加持',
+                'closeMenu': '關閉選單',
+                'toggleLanguage': 'English',
+                'videoCountPlaceholder': '數量',
+                'videoUrlPlaceholder': 'YouTube影片網址'
+            },
+            'en': {
+                'generateVideos': 'Generate',
+                'playAll': 'Play',
+                'pauseAll': 'Pause',
+                'clearAll': 'Clear',
+                'saveCurrentLayout': 'Save',
+                'addSMTVVideo': 'SMTV',
+                'addLiveVideo1': '12Q Blessings',
+                'addLiveVideo2': '2k Blessings',
+                'closeMenu': 'Close Menu',
+                'toggleLanguage': '中文',
+                'videoCountPlaceholder': 'NUM',
+                'videoUrlPlaceholder': 'YouTube Video URL'
+            }
+        };
+
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'zh' ? 'en' : 'zh';
+            updateLanguage();
+        }
+
+        function updateLanguage() {
+            document.querySelector('button[onclick="generateVideos()"]').innerHTML = `<i class="fas fa-video"></i> ${translations[currentLanguage]['generateVideos']}`;
+            document.querySelector('button[onclick="playAll()"]').innerHTML = `<i class="fas fa-play"></i> ${translations[currentLanguage]['playAll']}`;
+            document.querySelector('button[onclick="pauseAll()"]').innerHTML = `<i class="fas fa-pause"></i> ${translations[currentLanguage]['pauseAll']}`;
+            document.querySelector('button[onclick="clearAll()"]').innerHTML = `<i class="fas fa-stop"></i> ${translations[currentLanguage]['clearAll']}`;
+            document.querySelector('button[onclick="saveCurrentLayout()"]').innerHTML = `<i class="fas fa-save"></i> ${translations[currentLanguage]['saveCurrentLayout']}`;
+            document.querySelector('button[onclick="addSMTVVideo()"]').innerHTML = `<i class="fas fa-sun"></i> ${translations[currentLanguage]['addSMTVVideo']}`;
+            document.querySelector('button[onclick="addLiveVideo(\'UCyYoY9S20IXXPLPrQWE5RfA\', \'萬兆加持\')"]').innerHTML = `<i class="fas fa-moon"></i> ${translations[currentLanguage]['addLiveVideo1']}`;
+            document.querySelector('button[onclick="addLiveVideo(\'UC1vy_AzF3zGK-lde_b-EGGQ\', \'千級加持\')"]').innerHTML = `<i class="fas fa-star"></i> ${translations[currentLanguage]['addLiveVideo2']}`;
+            document.querySelector('button[onclick="toggleMenu()"]').innerHTML = `<i class="fas fa-times"></i> ${translations[currentLanguage]['closeMenu']}`;
+            document.querySelector('button[onclick="toggleLanguage()"]').innerHTML = `<i class="fas fa-globe"></i> ${translations[currentLanguage]['toggleLanguage']}`;
+
+            // 更新輸入框的佔位符
+            document.getElementById('videoCount').placeholder = translations[currentLanguage]['videoCountPlaceholder'];
+            document.getElementById('videoUrl').placeholder = translations[currentLanguage]['videoUrlPlaceholder'];
         }
     </script>
 </body>
