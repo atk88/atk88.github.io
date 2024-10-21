@@ -305,7 +305,7 @@
                 font-size: 12px;
                 padding: 5px;
                 box-sizing: border-box;
-                margin: 5px 0; /* 確保所有按鈕和輸入框有一致的上下間距 */
+                margin: 5px 0; /* 確保所有按鈕和入框有一致的上下間距 */
             }
 
             .controls input[type="text"] {
@@ -349,6 +349,7 @@
             <button onclick="playAll()"><i class="fas fa-play"></i>播放全部</button>
             <button onclick="pauseAll()"><i class="fas fa-pause"></i>暫停全部</button>
             <button onclick="clearAll()"><i class="fas fa-stop"></i> 清除全部</button>
+            <button onclick="saveCurrentLayout()"><i class="fas fa-save"></i> 儲存設定</button>
             <button class="smtv-button" onclick="addSMTVVideo()"><i class="fas fa-sun"></i>SMTV</button>
             <button class="smtv-button" onclick="addLiveVideo('UCyYoY9S20IXXPLPrQWE5RfA', '萬兆加持')"><i class="fas fa-moon"></i>萬兆加持</button>
             <button class="smtv-button" onclick="addLiveVideo('UC1vy_AzF3zGK-lde_b-EGGQ', '千級加持')"><i class="fas fa-star"></i>千級加持</button>
@@ -363,7 +364,7 @@
     <script>
         window.addEventListener('load', () => {
             document.body.style.opacity = '1';
-            loadSettingsFromUrl();
+            loadSettings(); // 確保載入儲存的設定
         });
 
         function loadSettingsFromUrl() {
@@ -396,7 +397,7 @@
         const players = [];
 
         function onYouTubeIframeAPIReady() {
-            // 確保 API 已加載
+            // 確保 API 載
         }
 
         const extractVideoId = (url) => {
@@ -447,7 +448,7 @@
             }
 
             adjustLayout();
-            autoSaveSettings(); // 確保自動儲存
+            saveCurrentLayout(); // 手動儲存設定
         }
 
         function adjustLayout() {
@@ -470,7 +471,7 @@
                 rows = Math.ceil(videoCount / cols);
             }
 
-            // 修正：確保行列數不會超過必要的數量
+            // 修正：確保列數不會超過必要的數量
             if (cols * rows > videoCount) {
                 if (cols > rows) {
                     cols--;
@@ -513,6 +514,7 @@
                 addVideo(videoId);
             }
             adjustLayout();
+            saveCurrentLayout(); // 手動儲存設定
         }
 
         const apiKeys = [
@@ -561,7 +563,7 @@
                 })
                 .catch(error => {
                     console.error('Error fetching live video:', error);
-                    alert('無法獲取直播影片，請稍後再試');
+                    alert('無法獲取播影片，請稍後再試');
                 });
         }
 
@@ -575,8 +577,9 @@
                             addVideo(videoId);
                         }
                         adjustLayout(); // 確保佈局調整
+                        saveCurrentLayout(); // 手動存設定
                     } else {
-                        alert(`${buttonName}目前沒有直播影片`);
+                        alert(`${buttonName}目沒有直播影片`);
                     }
                 });
         }
@@ -584,14 +587,7 @@
         function clearAll() {
             const videoContainer = document.getElementById('videoContainer');
             videoContainer.innerHTML = ''; // 清空影片容器
-            players.length = 0; // 清空播放器陣列
-
-            // 清除緩存的直播影片資料
-            Object.keys(localStorage).forEach(key => {
-                if (key.startsWith('liveVideo_')) {
-                    localStorage.removeItem(key);
-                }
-            });
+            players.length = 0; // 清空播放器陣
 
             // 清除影片設定的儲存
             localStorage.removeItem('videoSettings');
@@ -634,22 +630,38 @@
                 events: {
                     'onReady': (event) => {
                         event.target.setVolume(1); // 設定音量為最低音量1
-                        event.target.setPlaybackQuality('small'); // 設定解析度為最低
+                        event.target.setPlaybackQuality('tiny'); // 設定解析度為144p
                     }
                 }
             });
             players.push(player);
         }
 
-        // 在頁面加載時自動載入儲存的設定
-        window.addEventListener('load', () => {
-            document.body.style.opacity = '1';
-            loadSettings();
-        });
-
         function toggleMenu() {
             const controlsContainer = document.getElementById('controlsContainer');
             controlsContainer.classList.toggle('active');
+        }
+
+        function autoSaveSettings() {
+            const videoSettings = players.map(player => ({
+                videoId: player.getVideoData().video_id,
+                count: 1 // 每個播放器代表一個影片
+            }));
+            localStorage.setItem('videoSettings', JSON.stringify(videoSettings));
+        }
+
+        function saveCurrentLayout() {
+            const videoSettings = {};
+            players.forEach(player => {
+                const videoId = player.getVideoData().video_id;
+                if (videoSettings[videoId]) {
+                    videoSettings[videoId].count += 1;
+                } else {
+                    videoSettings[videoId] = { videoId: videoId, count: 1 };
+                }
+            });
+            localStorage.setItem('videoSettings', JSON.stringify(Object.values(videoSettings)));
+            alert('目前的影片佈局已儲存');
         }
     </script>
 </body>
