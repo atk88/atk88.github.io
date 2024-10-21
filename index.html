@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>SMTV多螢幕播放</title>
+    <title>SMTV多螢幕 SMTV Multi-Screen</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         :root {
@@ -383,7 +383,7 @@
                     adjustLayout();
                 } catch (error) {
                     console.error('Error parsing settings from URL:', error);
-                    alert('無法加載影片設定，請檢���網址是否正確');
+                    alert('無法加載影片設定，請檢網址是否正確');
                 }
             } else {
                 loadSettings(); // 如果沒有URL參數，則加載本地儲存的設定
@@ -662,7 +662,7 @@
                 }
             });
             localStorage.setItem('videoSettings', JSON.stringify(Object.values(videoSettings)));
-            alert('目前的影片佈局已儲存');
+            alert(translations[currentLanguage]['layoutSaved']); // 使用翻譯
         }
 
         // 新增語言切換功能
@@ -681,7 +681,8 @@
                 'closeMenu': '關閉選單',
                 'toggleLanguage': 'English',
                 'videoCountPlaceholder': '數量',
-                'videoUrlPlaceholder': 'YouTube影片網址'
+                'videoUrlPlaceholder': 'YouTube影片網址',
+                'layoutSaved': 'Current video layout has been saved'
             },
             'en': {
                 'generateVideos': 'Generate',
@@ -695,7 +696,8 @@
                 'closeMenu': 'Close Menu',
                 'toggleLanguage': '中文',
                 'videoCountPlaceholder': 'NUM',
-                'videoUrlPlaceholder': 'YouTube Video URL'
+                'videoUrlPlaceholder': 'YouTube Video URL',
+                'layoutSaved': 'Current video layout has been saved'
             }
         };
 
