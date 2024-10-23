@@ -588,10 +588,14 @@
         function clearAll() {
             const videoContainer = document.getElementById('videoContainer');
             videoContainer.innerHTML = ''; // 清空影片容器
-            players.length = 0; // 清空播放器陣
+            players.length = 0; // 清空播放器陣列
 
             // 清除影片設定的儲存
             localStorage.removeItem('videoSettings');
+
+            // 清除快取的直播影片資料
+            localStorage.removeItem('liveVideo_UCyYoY9S20IXXPLPrQWE5RfA');
+            localStorage.removeItem('liveVideo_UC1vy_AzF3zGK-lde_b-EGGQ');
 
             console.log('All videos and settings cleared.');
         }
