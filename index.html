@@ -383,7 +383,8 @@
                     adjustLayout();
                 } catch (error) {
                     console.error('Error parsing settings from URL:', error);
-                    alert('無法加載影片設定，請檢網址是否正確');
+                    alert('⚠️無法加載影片，請檢查網址 | Unable to load video, please check URL⚠️'
+');
                 }
             } else {
                 loadSettings(); // 如果沒有URL參數，則加載本地儲存的設定
@@ -413,11 +414,11 @@
             const videoId = extractVideoId(videoUrl);
 
             if (videoCount < 1 || videoCount > 160) {
-                alert("請輸入1到160間的數量");
+                alert("⚠️ 請輸入1到160間的數量 | Please enter a number between 1 and 160 ⚠️");
                 return;
             }
             if (!videoId) {
-                alert("請輸入有效的YouTube影片網址");
+                alert("⚠️ 請輸入有效的YouTube影片網址 | Please enter a valid YouTube URL ⚠️");
                 return;
             }
 
@@ -564,7 +565,7 @@
                 })
                 .catch(error => {
                     console.error('Error fetching live video:', error);
-                    alert('無法獲取播影片，請稍後再試');
+                    alert('⚠️無法獲取播影片，請稍後再試 | Error fetching live video ⚠️');
                 });
         }
 
@@ -580,7 +581,7 @@
                         adjustLayout(); // 確保佈局調整
                         saveCurrentLayout(); // 手動存設定
                     } else {
-                        alert(`${buttonName}目沒有直播影片`);
+                        alert(`${buttonName}⚠️無法獲取播影片，請稍後再試 | Error fetching live video ⚠️`);
                     }
                 });
         }
