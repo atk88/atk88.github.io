@@ -352,7 +352,7 @@
             <button onclick="saveCurrentLayout()"><i class="fas fa-save"></i> 儲存設定</button>
             <button class="smtv-button" onclick="addSMTVVideo()"><i class="fas fa-sun"></i>SMTV</button>
             <button class="smtv-button" onclick="addLiveVideo('UCyYoY9S20IXXPLPrQWE5RfA', '萬兆加持')"><i class="fas fa-moon"></i>萬兆加持</button>
-            <button class="smtv-button" onclick="addLiveVideo('UC1vy_AzF3zGK-lde_b-EGGQ', '佰仟加持')"><i class="fas fa-star"></i>佰仟加持</button>
+            <button class="smtv-button" onclick="addLiveVideo('UC1vy_AzF3zGK-lde_b-EGGQ', '千級加持')"><i class="fas fa-star"></i>千級加持</button>
             <button class="close-menu" onclick="toggleMenu()"><i class="fas fa-times"></i> 關閉選單</button>
             <button class="smtv-button" onclick="toggleLanguage()"><i class="fas fa-globe"></i> English</button>
         </div>
@@ -383,8 +383,7 @@
                     adjustLayout();
                 } catch (error) {
                     console.error('Error parsing settings from URL:', error);
-                    alert('⚠️無法加載影片，請檢查網址 | Unable to load video, please check URL⚠️'
-');
+                    alert('無法加載影片設定，請檢網址是否正確');
                 }
             } else {
                 loadSettings(); // 如果沒有URL參數，則加載本地儲存的設定
@@ -414,11 +413,11 @@
             const videoId = extractVideoId(videoUrl);
 
             if (videoCount < 1 || videoCount > 160) {
-                alert("⚠️ 請輸入1到160間的數量 | Please enter a number between 1 and 160 ⚠️");
+                alert("請輸入1到160間的數量");
                 return;
             }
             if (!videoId) {
-                alert("⚠️ 請輸入有效的YouTube影片網址 | Please enter a valid YouTube URL ⚠️");
+                alert("請輸入有效的YouTube影片網址");
                 return;
             }
 
@@ -565,7 +564,7 @@
                 })
                 .catch(error => {
                     console.error('Error fetching live video:', error);
-                    alert('⚠️無法獲取播影片，請稍後再試 | Error fetching live video ⚠️');
+                    alert('無法獲取播影片，請稍後再試');
                 });
         }
 
@@ -581,7 +580,7 @@
                         adjustLayout(); // 確保佈局調整
                         saveCurrentLayout(); // 手動存設定
                     } else {
-                        alert(`${buttonName}⚠️無法獲取播影片，請稍後再試 | Error fetching live video ⚠️`);
+                        alert(`${buttonName}目沒有直播影片`);
                     }
                 });
         }
@@ -599,9 +598,6 @@
             localStorage.removeItem('liveVideo_UC1vy_AzF3zGK-lde_b-EGGQ');
 
             console.log('All videos and settings cleared.');
-
-            // 強制重新載入頁面
-            location.reload(true);
         }
 
         function loadSettings() {
@@ -670,7 +666,7 @@
                 }
             });
             localStorage.setItem('videoSettings', JSON.stringify(Object.values(videoSettings)));
-            alert('⚠️ 目前佈局已儲存 | Current Layout is Saved ⚠️');
+            alert('目前的影片佈局已儲存');
         }
 
         // 新增語言切換功能
@@ -720,7 +716,7 @@
             document.querySelector('button[onclick="saveCurrentLayout()"]').innerHTML = `<i class="fas fa-save"></i> ${translations[currentLanguage]['saveCurrentLayout']}`;
             document.querySelector('button[onclick="addSMTVVideo()"]').innerHTML = `<i class="fas fa-sun"></i> ${translations[currentLanguage]['addSMTVVideo']}`;
             document.querySelector('button[onclick="addLiveVideo(\'UCyYoY9S20IXXPLPrQWE5RfA\', \'萬兆加持\')"]').innerHTML = `<i class="fas fa-moon"></i> ${translations[currentLanguage]['addLiveVideo1']}`;
-            document.querySelector('button[onclick="addLiveVideo(\'UC1vy_AzF3zGK-lde_b-EGGQ\', \'佰仟加持\')"]').innerHTML = `<i class="fas fa-star"></i> ${translations[currentLanguage]['addLiveVideo2']}`;
+            document.querySelector('button[onclick="addLiveVideo(\'UC1vy_AzF3zGK-lde_b-EGGQ\', \'千級加持\')"]').innerHTML = `<i class="fas fa-star"></i> ${translations[currentLanguage]['addLiveVideo2']}`;
             document.querySelector('button[onclick="toggleMenu()"]').innerHTML = `<i class="fas fa-times"></i> ${translations[currentLanguage]['closeMenu']}`;
             document.querySelector('button[onclick="toggleLanguage()"]').innerHTML = `<i class="fas fa-globe"></i> ${translations[currentLanguage]['toggleLanguage']}`;
 
