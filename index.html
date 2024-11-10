@@ -366,6 +366,7 @@
         window.addEventListener('load', () => {
             document.body.style.opacity = '1';
             loadSettings(); // 確保載入儲存的設定
+            loadLanguagePreference(); // 載入語言偏好
         });
 
         function loadSettingsFromUrl() {
@@ -705,7 +706,16 @@
 
         function toggleLanguage() {
             currentLanguage = currentLanguage === 'zh' ? 'en' : 'zh';
+            localStorage.setItem('languagePreference', currentLanguage); // 儲存語言偏好
             updateLanguage();
+        }
+
+        function loadLanguagePreference() {
+            const savedLanguage = localStorage.getItem('languagePreference');
+            if (savedLanguage) {
+                currentLanguage = savedLanguage;
+                updateLanguage();
+            }
         }
 
         function updateLanguage() {
