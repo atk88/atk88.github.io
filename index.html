@@ -100,13 +100,13 @@
         }
 
         .video-container {
-            flex-grow: 1;
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
             gap: 5px;
             padding: 5px;
             box-sizing: border-box;
             overflow-y: auto;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            grid-auto-rows: calc((100vh - 56px) / auto);
         }
 
         .video-wrapper {
@@ -360,7 +360,9 @@
     <div class="logo">
         <img src="https://i.imgur.com/S7fBbTw.png" alt="Logo">
     </div>
-    <div class="video-container" id="videoContainer"></div>
+    <div class="video-container" id="videoContainer">
+        <!-- 使用 React 代碼生成的影片 -->
+    </div>
 
     <script>
         window.addEventListener('load', () => {
@@ -520,8 +522,6 @@
         }
 
         const apiKeys = [
-            'AIzaSyD65juBgTEKH7Dy0vqDAknppuRXKqd1FjA',
-            'AIzaSyAln2KSxJ1Vq5R00scaM5E8XnmdbQ4Mke4',
             'AIzaSyBGNTWKfd5ZLwamAFHGoL8vkgejarHCLCQ',
             'AIzaSyBgMSkcO2bzEL-t8PYGExdopxZxFQ8LtE0',
             'AIzaSyBqmItrG5AfvTdymHNKhZHedyx3uPIRPqI',
